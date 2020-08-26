@@ -49,10 +49,6 @@ module.exports = {
     maxEntrypointSize: 1048576, // Max size of deployment bundle in Lambda@Edge Viewer Request
   },
   optimization: {
-    minimizer: [new TerserPlugin({
-      cache: true,
-      parallel: true,
-      extractComments: true,
-    })],
+    minimize: false
   },
 }

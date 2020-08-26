@@ -1,3 +1,4 @@
+
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
@@ -24,12 +25,18 @@ async function getSigningKey(jwksUri: string, kid: string) {
     );
 }
 
-export async function validate(jwtToken: string, jwksUri: string, issuer: string, audience: string) {
+export async function validate(jwtToken: string, jwksUri: string, issuer: string, audience: string, targetState: string) {
 
     const decodedToken = decode(jwtToken, { complete: true }) as { [key: string]: any };
     if (!decodedToken) {
         throw new Error('Cannot parse JWT token');
     }
+
+    // make sure the user's in the right group
+    const cognitoGroups = decodedToken['payload']["cognito:groups"];
+    if (cognitoGroups.indexOf(targetState) == -1) {
+    	throw new Error('You dont have the correct group ' + targetState + ' to view this page. Found groups: ' + cognitoGroups);
+    };
 
     // The JWT contains a "kid" claim, key id, that tells which key was used to sign the token
     const kid = decodedToken['header']['kid'];
@@ -48,3 +55,4 @@ export async function validate(jwtToken: string, jwksUri: string, issuer: string
         verificationOptions,
         (err) => err ? reject(err) : resolve()));
 }
+

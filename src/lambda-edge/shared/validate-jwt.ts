@@ -33,8 +33,11 @@ export async function validate(jwtToken: string, jwksUri: string, issuer: string
     }
 
     // make sure the user's in the right group
-    const cognitoGroups = decodedToken['payload']["cognito:groups"];
-    if (cognitoGroups.indexOf(targetState) == -1) {
+    var cognitoGroups = decodedToken['payload']["cognito:groups"];
+    cognitoGroups = cognitoGroups.toLocaleString().toLowerCase().split(',');
+    if (cognitoGroups.indexOf("developers") == -1) {
+        // There's probably a better way to do this
+    } else if (cognitoGroups.indexOf(targetState) == -1) {
     	throw new Error('You dont have the correct group ' + targetState + ' to view this page. Found groups: ' + cognitoGroups);
     };
 

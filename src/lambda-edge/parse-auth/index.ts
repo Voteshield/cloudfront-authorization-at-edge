@@ -76,7 +76,8 @@ export const handler: CloudFrontRequestHandler = async (event) => {
             CONFIG.logger.debug('ID token found, will check if it is valid');
             try {
                 CONFIG.logger.info('Validating JWT ...');
-                await validate(idToken, CONFIG.tokenJwksUri, CONFIG.tokenIssuer, CONFIG.clientId, domainName.split(".")[0]);
+                const targetGroupName = "ballotshield" + domainName.split(".")[0]
+                await validate(idToken, CONFIG.tokenJwksUri, CONFIG.tokenIssuer, CONFIG.clientId, targetGroupName);
                 CONFIG.logger.info('JWT is valid');
                 // Return user to where he/she came from
                 const response = {
